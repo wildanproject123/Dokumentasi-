@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dokumentasi Kegiatan Digital - Google Drive & Sheets</title>
+  
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS CDNs -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-light: #eff6ff;
+      --border-color: #e2e8f0;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 10px 30px -5px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      --sidebar-width: 260px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #0f172a;
+      --bg-card: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+      --primary-light: #1e3a8a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    .card-modern {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-soft);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-modern:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    #wrapper {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    #sidebar {
+      width: var(--sidebar-width);
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      transition: all 0.3s ease;
+    }
+
+    #sidebar.collapsed {
+      margin-left: calc(-1 * var(--sidebar-width));
+    }
+
+    #main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #main-content.expanded {
+      margin-left: 0;
+    }
+
+    .navbar-sticky {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-link-custom {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: var(--text-muted);
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      margin: 4px 12px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .nav-link-custom:hover, .nav-link-custom.active {
+      background-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .form-control, .form-select {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .dropzone-area {
+      border: 2px dashed var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      text-align: center;
+      background: var(--primary-light);
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .dropzone-area:hover {
+      background: rgba(37, 99, 235, 0.15);
+    }
+
+    .img-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .img-preview-item {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+
+    .img-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .gallery-card {
+      overflow: hidden;
+      border-radius: var(--radius-lg);
+      transition: transform 0.3s ease;
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .gallery-img-container {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .gallery-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-card:hover .gallery-img-container img {
+      transform: scale(1.08);
+    }
+
+    .drive-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #0f9d58;
+      border-radius: 20px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+
+    .btn-primary-custom {
+      background-color: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: 10px 20px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .btn-primary-custom:hover {
+      background-color: var(--primary-hover);
+      color: #fff;
+    }
+
+    #pdf-printable-template, #pdf-all-gallery-template {
+      background: #ffffff;
+      color: #000000;
+      padding: 30px;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        margin-left: calc(-1 * var(--sidebar-width));
+      }
+      #sidebar.show-mobile {
+        margin-left: 0;
+      }
+      #main-content {
+        margin-left: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- VIEW LOGIN -->
+  <div id="view-login" class="app-view d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card-modern p-5 text-center" style="width: 100%; max-width: 400px;" data-aos="zoom-in">
+      <div class="mb-4">
+        <i class="bi bi-camera-reels text-primary display-4"></i>
+        <h4 class="fw-bold mt-2">DOCUDIGITAL</h4>
+        <p class="text-muted small">Google Drive & Sheet Integrated System</p>
+      </div>
+      <form id="form-login">
+        <div class="mb-3 text-start">
+          <label class="form-label small text-muted">Email Instansi</label>
+          <input type="email" id="login-email" class="form-control" value="admin@instansi.go.id" required>
+        </div>
+        <div class="mb-4 text-start">
+          <label class="form-label small text-muted">Password</label>
+          <input type="password" id="login-password" class="form-control" value="admin123" required>
+        </div>
+        <button type="submit" class="btn btn-primary-custom w-100">Masuk Sistem</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION MAIN WRAPPER -->
+  <div id="wrapper-sidebar" class="d-none">
+    <div id="wrapper">
+      
+      <!-- SIDEBAR -->
+      <aside id="sidebar">
+        <div class="p-4 d-flex align-items-center gap-3">
+          <i class="bi bi-camera-reels fs-3 text-primary"></i>
+          <span class="fw-bold fs-5">DocuDigital</span>
+        </div>
+        <nav class="mt-3">
+          <a href="#" class="nav-link-custom active" onclick="switchTab(event, 'dashboard')">
+            <i class="bi bi-grid"></i> Dashboard
+          </a>
+          <a href="#" class="nav-link-custom" onclick="switchTab(event, 'kegiatan')">
+            <i class="bi bi-journal-text"></i> Data Kegiatan
+          </a>
+          <a href="#" class="nav-link-custom" onclick="switchTab(event, 'galeri')">
+            <i class="bi bi-images"></i> Galeri Foto
+          </a>
+          <a href="#" class="nav-link-custom" onclick="switchTab(event, 'form-kegiatan')">
+            <i class="bi bi-plus-circle"></i> Tambah Baru
+          </a>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main id="main-content">
+        
+        <!-- NAVBAR -->
+        <header class="navbar-sticky p-3 d-flex justify-content-between align-items-center">
+          <button id="sidebar-toggle" class="btn btn-light"><i class="bi bi-list fs-5"></i></button>
+          
+          <div class="d-flex align-items-center gap-3">
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2">
+              <i class="bi bi-google me-1"></i> Drive & Sheets Active
+            </span>
+            <button id="theme-toggle" class="btn btn-light rounded-circle"><i class="bi bi-moon-stars"></i></button>
+            <div class="dropdown">
+              <span class="fw-semibold me-2" id="user-name-display">Administrator</span>
+              <button onclick="handleLogout()" class="btn btn-outline-danger btn-sm"><i class="bi bi-box-arrow-right"></i></button>
+            </div>
+          </div>
+        </header>
+
+        <!-- CONTAINER VIEWS -->
+        <div class="p-4">
+          
+          <!-- VIEW DASHBOARD -->
+          <div id="view-dashboard" class="app-view">
+            <h4 class="fw-bold mb-4">Ringkasan Kegiatan</h4>
+            
+            <div class="row g-4 mb-4">
+              <div class="col-md-6 col-lg-3" data-aos="fade-up">
+                <div class="card-modern p-4">
+                  <span class="text-muted small">Total Kegiatan</span>
+                  <h2 class="fw-bold mt-2" id="stat-total-kegiatan">0</h2>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-modern p-4">
+                  <span class="text-muted small">Total Dokumentasi Foto</span>
+                  <h2 class="fw-bold mt-2" id="stat-total-foto">0</h2>
+                </div>
+              </div>
+            </div>
+
+            <!-- CHART SECTION -->
+            <div class="row g-4">
+              <div class="col-md-12" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-modern p-4">
+                  <h6 class="fw-bold mb-3">Statistik Kegiatan Bulanan</h6>
+                  <canvas id="chartKegiatanBulanan" height="100"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW TABEL DATA KEGIATAN -->
+          <div id="view-kegiatan" class="app-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h4 class="fw-bold">Dokumentasi Kegiatan</h4>
+              <button class="btn btn-primary-custom" onclick="openFormTambah()"><i class="bi bi-plus-lg me-2"></i>Tambah Kegiatan</button>
+            </div>
+
+            <div class="card-modern p-4">
+              <div class="table-responsive">
+                <table id="table-kegiatan" class="table table-hover w-100">
+                  <thead>
+                    <tr>
+                      <th>Tanggal</th>
+                      <th>Nama Kegiatan</th>
+                      <th>Kategori</th>
+                      <th>Lokasi</th>
+                      <th>Penanggung Jawab</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW GALERI FOTO KEGIATAN -->
+          <div id="view-galeri" class="app-view d-none">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+              <div>
+                <h4 class="fw-bold mb-1">Galeri Foto Kegiatan</h4>
+                <p class="text-muted small mb-0">Foto dokumentasi yang tersimpan di Google Drive Storage</p>
+              </div>
+              <div class="d-flex gap-2">
+                <select id="filter-kategori-galeri" class="form-select form-select-sm" style="width: 180px;" onchange="renderGaleriFoto()">
+                  <option value="ALL">Semua Kategori</option>
+                  <option value="Rapat">Rapat</option>
+                  <option value="Sosialisasi">Sosialisasi</option>
+                  <option value="Pelatihan">Pelatihan</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                
+                <!-- FITUR BARU: DOWNLOAD PDF SEMUA KEGIATAN -->
+                <button onclick="downloadPDFSemuaGaleri()" class="btn btn-danger btn-sm text-nowrap">
+                  <i class="bi bi-file-earmark-pdf-fill me-1"></i> Download PDF Semua Kegiatan
+                </button>
+              </div>
+            </div>
+
+            <div id="galeri-grid-container" class="row g-4"></div>
+          </div>
+
+          <!-- VIEW FORM TAMBAH KEGIATAN -->
+          <div id="view-form-kegiatan" class="app-view d-none">
+            <h4 class="fw-bold mb-4">Input Dokumentasi Baru</h4>
+            <div class="card-modern p-4">
+              <form id="form-kegiatan">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Tanggal Kegiatan</label>
+                    <input type="date" id="field-tanggal" class="form-control" required>
+                  </div>
+                  <div class="col-md-8">
+                    <label class="form-label">Nama Kegiatan</label>
+                    <input type="text" id="field-nama" class="form-control" placeholder="Contoh: Rapat Koordinasi Tahunan" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Lokasi</label>
+                    <input type="text" id="field-lokasi" class="form-control" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Kategori</label>
+                    <select id="field-kategori" class="form-select">
+                      <option value="Rapat">Rapat</option>
+                      <option value="Sosialisasi">Sosialisasi</option>
+                      <option value="Pelatihan">Pelatihan</option>
+                      <option value="Lainnya">Lainnya</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Penanggung Jawab</label>
+                    <input type="text" id="field-pj" class="form-control" required>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Deskripsi / Catatan Singkat</label>
+                    <textarea id="field-deskripsi" class="form-control" rows="3"></textarea>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Unggah Foto Dokumentasi (Otomatis Sync ke Google Drive)</label>
+                    <div class="dropzone-area" onclick="document.getElementById('input-foto').click();">
+                      <i class="bi bi-cloud-arrow-up display-5 text-primary"></i>
+                      <p class="mb-0 mt-2">Klik atau tarik foto ke area ini</p>
+                      <input type="file" id="input-foto" multiple accept="image/*" class="d-none">
+                    </div>
+                    <div id="preview-container" class="img-preview-grid"></div>
+                  </div>
+                  <div class="col-12 mt-4">
+                    <button type="submit" class="btn btn-primary-custom">
+                      <i class="bi bi-google me-2"></i>Simpan ke Drive & Sheet
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- VIEW DETAIL KEGIATAN & EKSPOR PDF INDIVIDUAL -->
+          <div id="view-detail" class="app-view d-none">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <button class="btn btn-light" onclick="showView('kegiatan')"><i class="bi bi-arrow-left me-2"></i>Kembali</button>
+              <div class="d-flex gap-2">
+                <a id="btn-open-drive-folder" href="#" target="_blank" class="btn btn-outline-success"><i class="bi bi-folder-symlink me-2"></i>Buka Folder Drive</a>
+                <button onclick="downloadPDF()" class="btn btn-danger"><i class="bi bi-file-earmark-pdf me-2"></i>Download PDF Resmi</button>
+              </div>
+            </div>
+
+            <!-- PDF TEMPLATE SATU KEGIATAN -->
+            <div id="pdf-printable-template" class="card-modern p-4 mb-4">
+              <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center">
+                <div>
+                  <h2 id="pdf-nama-kegiatan" class="fw-bold mb-1 text-primary"></h2>
+                  <p class="text-muted mb-0"><i class="bi bi-building me-1"></i> Laporan Kegiatan Digital</p>
+                </div>
+                <div class="text-end">
+                  <span class="badge bg-primary px-3 py-2 fs-6" id="pdf-kategori"></span>
+                </div>
+              </div>
+
+              <div class="row mb-4">
+                <div class="col-6">
+                  <p class="mb-1 text-muted small">Tanggal Pelaksanaan</p>
+                  <h6 class="fw-semibold" id="pdf-tanggal"></h6>
+                </div>
+                <div class="col-6">
+                  <p class="mb-1 text-muted small">Lokasi Kegiatan</p>
+                  <h6 class="fw-semibold" id="pdf-lokasi"></h6>
+                </div>
+                <div class="col-6 mt-3">
+                  <p class="mb-1 text-muted small">Penanggung Jawab</p>
+                  <h6 class="fw-semibold" id="pdf-pj"></h6>
+                </div>
+                <div class="col-6 mt-3">
+                  <p class="mb-1 text-muted small">Penyimpanan Cloud</p>
+                  <h6 class="fw-semibold text-success"><i class="bi bi-check-circle me-1"></i> Google Drive & Sheet Sync</h6>
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h6 class="fw-bold border-bottom pb-2">Deskripsi Pelaksanaan</h6>
+                <p id="pdf-deskripsi" class="mt-2 text-justify"></p>
+              </div>
+
+              <div>
+                <h6 class="fw-bold border-bottom pb-2 mb-3">Lampiran Dokumentasi Foto</h6>
+                <div id="detail-gallery-grid" class="row g-3"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- HIDDEN TEMPLATE UNTUK PDF REKAP SEMUA KEGIATAN -->
+          <div class="d-none">
+            <div id="pdf-all-gallery-template">
+              <div class="border-bottom pb-3 mb-4 text-center">
+                <h2 class="fw-bold text-primary mb-1">LAPORAN REKAPITULASI SELURUH KEGIATAN</h2>
+                <p class="text-muted mb-0">Dokumentasi Terintegrasi Google Drive & Google Sheets</p>
+              </div>
+              <div id="pdf-all-gallery-content"></div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- JavaScript CDNs -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- APPLICATION LOGIC ENGINE -->
+  <script>
+    // Konfigurasi Google Apps Script (Ubah URL dengan Web App URL Anda)
+    const CONFIG = {
+      GAS_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbwPXM5ad5bkW_e0UKT68g2PDW3__jrSL7RZnbrISERIdTaIOp2-EpFhk5cmaRIoFY9X/exec"
+    };
+
+    const AppState = {
+      currentUser: null,
+      uploadedFiles: [],
+      chartInstance: null,
+      currentActiveKegiatan: null,
+      kegiatanList: []
+    };
+
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof AOS !== 'undefined') AOS.init({ duration: 800, once: true });
+      bindEvents();
+      checkAuth();
+    });
+
+    function checkAuth() {
+      const user = sessionStorage.getItem('user');
+      if (!user) {
+        showView('login');
+      } else {
+        AppState.currentUser = JSON.parse(user);
+        document.getElementById('user-name-display').innerText = AppState.currentUser.name;
+        fetchDataFromGoogleSheet();
+        showView('dashboard');
+      }
+    }
+
+    // AMBIL DATA REALTIME DARI GOOGLE SHEETS VIA GAS
+    function fetchDataFromGoogleSheet() {
+      if (CONFIG.GAS_WEB_APP_URL.includes("AKfycbwPXM5ad5bkW_e0UKT68g2PDW3__jrSL7RZnbrISERIdTaIOp2-EpFhk5cmaRIoFY9X/exec")) {
+        // Data Fallback/Dummy jika Web App belum dikonfigurasi
+        AppState.kegiatanList = [
+          {
+            id: 'ACT-101',
+            tanggal: '2026-03-10',
+            namaKegiatan: 'Rapat Koordinasi Perencanaan Anggaran',
+            lokasi: 'Ruang Rapat Utama',
+            kategori: 'Rapat',
+            penanggungJawab: 'Budi Santoso',
+            deskripsi: 'Pembahasan alokasi anggaran operasional dan pelaksanaan program berjalan lancar.',
+            driveFolderUrl: 'https://drive.google.com',
+            jumlahFoto: 2,
+            urlFoto: [
+              'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=600&q=80',
+              'https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=600&q=80'
+            ]
+          },
+          {
+            id: 'ACT-102',
+            tanggal: '2026-03-15',
+            namaKegiatan: 'Sosialisasi Keamanan Informasi Digital',
+            lokasi: 'Aula Utama',
+            kategori: 'Sosialisasi',
+            penanggungJawab: 'Siti Rahma',
+            deskripsi: 'Edukasi terkait proteksi data pribadi dan pencegahan phishing.',
+            driveFolderUrl: 'https://drive.google.com',
+            jumlahFoto: 1,
+            urlFoto: [
+              'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?auto=format&fit=crop&w=600&q=80'
+            ]
+          }
+        ];
+        renderDashboard();
+        return;
+      }
+
+      fetch(CONFIG.GAS_WEB_APP_URL)
+        .then(res => res.json())
+        .then(data => {
+          if (data && Array.isArray(data)) {
+            AppState.kegiatanList = data;
+            renderDashboard();
+          }
+        })
+        .catch(err => console.error("Gagal sinkronisasi data Google Sheet:", err));
+    }
+
+    function bindEvents() {
+      document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.toggle('show-mobile');
+        } else {
+          sidebar.classList.toggle('collapsed');
+          mainContent.classList.toggle('expanded');
+        }
+      });
+
+      document.getElementById('theme-toggle')?.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+      });
+
+      document.getElementById('form-login')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        if (email === 'admin@instansi.go.id' && password === 'admin123') {
+          const userObj = { name: 'Administrator', email: email };
+          sessionStorage.setItem('user', JSON.stringify(userObj));
+          AppState.currentUser = userObj;
+          document.getElementById('user-name-display').innerText = userObj.name;
+          fetchDataFromGoogleSheet();
+          showView('dashboard');
+          Toast.fire({ icon: 'success', title: 'Berhasil Masuk!' });
+        } else {
+          Swal.fire('Gagal Login', 'Email atau Password salah.', 'error');
+        }
+      });
+
+      document.getElementById('input-foto')?.addEventListener('change', async (e) => {
+        const files = Array.from(e.target.files);
+        const container = document.getElementById('preview-container');
+        container.innerHTML = '';
+        AppState.uploadedFiles = [];
+
+        for (const file of files) {
+          if (file.size > 10 * 1024 * 1024) {
+            Swal.fire('File Terlalu Besar', `Ukuran foto ${file.name} melebihi 10MB`, 'warning');
+            continue;
+          }
+          const base64Img = await compressImage(file, 1000, 0.7);
+          AppState.uploadedFiles.push(base64Img);
+
+          const div = document.createElement('div');
+          div.className = 'img-preview-item';
+          div.innerHTML = `<img src="${base64Img}">`;
+          container.appendChild(div);
+        }
+      });
+
+      // SIMPAN DATA KE GOOGLE DRIVE & SHEETS VIA API
+      document.getElementById('form-kegiatan')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (AppState.uploadedFiles.length === 0) {
+          Swal.fire('Peringatan', 'Harap lampirkan minimal 1 foto kegiatan!', 'warning');
+          return;
+        }
+
+        Swal.fire({
+          title: 'Mengunggah ke Google Drive & Sheet...',
+          text: 'Foto diunggah ke Drive, data disimpan di Sheets.',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading()
+        });
+
+        const newKegiatan = {
+          id: 'ACT-' + new Date().getTime().toString().substr(-4),
+          tanggal: document.getElementById('field-tanggal').value,
+          namaKegiatan: document.getElementById('field-nama').value,
+          lokasi: document.getElementById('field-lokasi').value,
+          kategori: document.getElementById('field-kategori').value,
+          penanggungJawab: document.getElementById('field-pj').value,
+          deskripsi: document.getElementById('field-deskripsi').value,
+          jumlahFoto: AppState.uploadedFiles.length,
+          urlFoto: [...AppState.uploadedFiles]
+        };
+
+        if (!CONFIG.GAS_WEB_APP_URL.includes("AKfycbxXXXXXXXXXXXXX")) {
+          // POST Ke Google Apps Script API
+          fetch(CONFIG.GAS_WEB_APP_URL, {
+            method: 'POST',
+            body: JSON.stringify(newKegiatan)
+          })
+          .then(res => res.json())
+          .then(resData => {
+            Swal.close();
+            AppState.kegiatanList.unshift(newKegiatan);
+            Swal.fire('Sukses!', 'Data tersimpan di Google Sheet & foto terupload ke Google Drive!', 'success');
+            resetFormAndRedirect();
+          })
+          .catch(err => {
+            Swal.close();
+            // Fallback penyimpanan lokal
+            AppState.kegiatanList.unshift(newKegiatan);
+            Swal.fire('Tersimpan Lokal', 'Server GAS tidak merespons, data disimpan secara lokal.', 'info');
+            resetFormAndRedirect();
+          });
+        } else {
+          // Tanpa Backend API
+          setTimeout(() => {
+            AppState.kegiatanList.unshift(newKegiatan);
+            Swal.close();
+            Swal.fire('Sukses!', 'Dokumentasi berhasil ditambahkan (Demo Mode).', 'success');
+            resetFormAndRedirect();
+          }, 1200);
+        }
+      });
+    }
+
+    function resetFormAndRedirect() {
+      document.getElementById('form-kegiatan').reset();
+      document.getElementById('preview-container').innerHTML = '';
+      AppState.uploadedFiles = [];
+      showView('kegiatan');
+    }
+
+    function compressImage(file, maxWidth, quality) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (event) => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+        };
+      });
+    }
+
+    function showView(viewId) {
+      document.querySelectorAll('.app-view').forEach(v => v.classList.add('d-none'));
+      const target = document.getElementById(`view-${viewId}`);
+      if (target) target.classList.remove('d-none');
+
+      const wrapper = document.getElementById('wrapper-sidebar');
+      if (viewId === 'login') {
+        wrapper.classList.add('d-none');
+      } else {
+        wrapper.classList.remove('d-none');
+      }
+
+      if (viewId === 'dashboard') renderDashboard();
+      if (viewId === 'kegiatan') renderTableKegiatan();
+      if (viewId === 'galeri') renderGaleriFoto();
+    }
+
+    function switchTab(e, viewId) {
+      e.preventDefault();
+      document.querySelectorAll('.nav-link-custom').forEach(el => el.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      showView(viewId);
+    }
+
+    function openFormTambah() {
+      document.querySelectorAll('.nav-link-custom').forEach(el => el.classList.remove('active'));
+      showView('form-kegiatan');
+    }
+
+    function renderDashboard() {
+      const totalKegiatan = AppState.kegiatanList.length;
+      const totalFoto = AppState.kegiatanList.reduce((acc, curr) => acc + (curr.jumlahFoto || 0), 0);
+
+      document.getElementById('stat-total-kegiatan').innerText = totalKegiatan;
+      document.getElementById('stat-total-foto').innerText = totalFoto;
+
+      const ctx = document.getElementById('chartKegiatanBulanan').getContext('2d');
+      if (AppState.chartInstance) AppState.chartInstance.destroy();
+
+      AppState.chartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+          datasets: [{
+            label: 'Jumlah Kegiatan',
+            data: [1, 2, totalKegiatan, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            borderColor: '#2563eb',
+            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderTableKegiatan() {
+      if ($.fn.DataTable.isDataTable('#table-kegiatan')) {
+        $('#table-kegiatan').DataTable().destroy();
+      }
+
+      $('#table-kegiatan').DataTable({
+        data: AppState.kegiatanList,
+        columns: [
+          { data: 'tanggal' },
+          { data: 'namaKegiatan' },
+          { data: 'kategori' },
+          { data: 'lokasi' },
+          { data: 'penanggungJawab' },
+          {
+            data: null,
+            render: (data) => `
+              <button onclick="viewDetail('${data.id}')" class="btn btn-sm btn-info text-white me-1" title="Lihat & PDF"><i class="bi bi-eye"></i></button>
+              <button onclick="deleteKegiatan('${data.id}')" class="btn btn-sm btn-danger" title="Hapus"><i class="bi bi-trash"></i></button>
+            `
+          }
+        ]
+      });
+    }
+
+    // RENDER MENU GALERI FOTO
+    function renderGaleriFoto() {
+      const container = document.getElementById('galeri-grid-container');
+      const filter = document.getElementById('filter-kategori-galeri').value;
+      container.innerHTML = '';
+
+      let filteredData = AppState.kegiatanList;
+      if (filter !== 'ALL') {
+        filteredData = AppState.kegiatanList.filter(x => x.kategori === filter);
+      }
+
+      if (filteredData.length === 0) {
+        container.innerHTML = `
+          <div class="col-12 text-center py-5">
+            <i class="bi bi-images text-muted display-4"></i>
+            <p class="text-muted mt-2">Belum ada foto dokumentasi untuk kategori ini.</p>
+          </div>
+        `;
+        return;
+      }
+
+      filteredData.forEach(kegiatan => {
+        kegiatan.urlFoto.forEach((fotoUrl) => {
+          const col = document.createElement('div');
+          col.className = 'col-md-4 col-sm-6';
+          col.innerHTML = `
+            <div class="card-modern gallery-card">
+              <div class="gallery-img-container">
+                <img src="${fotoUrl}" alt="Foto ${kegiatan.namaKegiatan}">
+                <span class="drive-badge"><i class="bi bi-google-drive me-1"></i>Drive</span>
+              </div>
+              <div class="p-3">
+                <span class="badge bg-primary-subtle text-primary mb-2">${kegiatan.kategori}</span>
+                <h6 class="fw-bold mb-1 text-truncate">${kegiatan.namaKegiatan}</h6>
+                <p class="text-muted small mb-2"><i class="bi bi-calendar3 me-1"></i>${kegiatan.tanggal} | ${kegiatan.lokasi}</p>
+                <button onclick="viewDetail('${kegiatan.id}')" class="btn btn-sm btn-outline-primary w-100">Detail & Ekspor PDF</button>
+              </div>
+            </div>
+          `;
+          container.appendChild(col);
+        });
+      });
+    }
+
+    // FITUR BARU: DOWNLOAD PDF SEMUA KEGIATAN
+    function downloadPDFSemuaGaleri() {
+      const filter = document.getElementById('filter-kategori-galeri').value;
+      let targetData = AppState.kegiatanList;
+
+      if (filter !== 'ALL') {
+        targetData = AppState.kegiatanList.filter(x => x.kategori === filter);
+      }
+
+      if (targetData.length === 0) {
+        Swal.fire('Tidak Ada Data', 'Tidak ada data kegiatan untuk dicetak ke PDF.', 'warning');
+        return;
+      }
+
+      const container = document.getElementById('pdf-all-gallery-content');
+      container.innerHTML = '';
+
+      targetData.forEach((kegiatan, idx) => {
+        const itemHtml = `
+          <div class="mb-5 pb-4 ${idx < targetData.length - 1 ? 'border-bottom' : ''}">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h4 class="fw-bold text-dark mb-0">${idx + 1}. ${kegiatan.namaKegiatan}</h4>
+              <span class="badge bg-primary px-3 py-1">${kegiatan.kategori}</span>
+            </div>
+            <p class="text-muted small mb-3">
+              Tanggal: <strong>${kegiatan.tanggal}</strong> | Lokasi: <strong>${kegiatan.lokasi}</strong> | PJ: <strong>${kegiatan.penanggungJawab}</strong>
+            </p>
+            <p class="text-dark small mb-3">${kegiatan.deskripsi || 'Tidak ada deskripsi.'}</p>
+            <div class="row g-2">
+              ${kegiatan.urlFoto.map(url => `
+                <div class="col-6">
+                  <div class="border rounded p-1 bg-light text-center">
+                    <img src="${url}" style="width: 100%; height: 180px; object-fit: cover;" class="rounded">
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', itemHtml);
+      });
+
+      const element = document.getElementById('pdf-all-gallery-template');
+      const opt = {
+        margin:       [0.4, 0.4, 0.4, 0.4],
+        filename:     `Rekap_Semua_Kegiatan_${new Date().toISOString().slice(0,10)}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      Swal.fire({
+        title: 'Menyusun PDF Rekapitulasi...',
+        text: 'Mengompilasi seluruh foto & data kegiatan.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        Swal.close();
+        Toast.fire({ icon: 'success', title: 'PDF Rekapitulasi berhasil diunduh!' });
+      });
+    }
+
+    // View Detail Individual
+    function viewDetail(id) {
+      const item = AppState.kegiatanList.find(x => x.id === id);
+      if (!item) return;
+
+      AppState.currentActiveKegiatan = item;
+
+      document.getElementById('pdf-nama-kegiatan').innerText = item.namaKegiatan;
+      document.getElementById('pdf-kategori').innerText = item.kategori;
+      document.getElementById('pdf-tanggal').innerText = item.tanggal;
+      document.getElementById('pdf-lokasi').innerText = item.lokasi;
+      document.getElementById('pdf-pj').innerText = item.penanggungJawab;
+      document.getElementById('pdf-deskripsi').innerText = item.deskripsi || 'Tidak ada catatan deskripsi tambahan.';
+      document.getElementById('btn-open-drive-folder').href = item.driveFolderUrl || 'https://drive.google.com';
+
+      const container = document.getElementById('detail-gallery-grid');
+      container.innerHTML = '';
+
+      item.urlFoto.forEach(url => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 mb-3';
+        col.innerHTML = `
+          <div class="border rounded p-2 text-center bg-light">
+            <img src="${url}" class="img-fluid rounded" style="max-height: 240px; width: 100%; object-fit: cover;">
+          </div>
+        `;
+        container.appendChild(col);
+      });
+
+      showView('detail');
+    }
+
+    // Download PDF Satu Kegiatan
+    function downloadPDF() {
+      if (!AppState.currentActiveKegiatan) return;
+
+      const element = document.getElementById('pdf-printable-template');
+      const opt = {
+        margin:       [0.4, 0.4, 0.4, 0.4],
+        filename:     `Dokumentasi_${AppState.currentActiveKegiatan.tanggal}_${AppState.currentActiveKegiatan.id}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      Swal.fire({
+        title: 'Mencetak PDF...',
+        text: 'Menyusun dokumen PDF beserta lampiran foto.',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading()
+      });
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        Swal.close();
+        Toast.fire({ icon: 'success', title: 'PDF Berhasil diunduh!' });
+      });
+    }
+
+    function deleteKegiatan(id) {
+      Swal.fire({
+        title: 'Hapus Kegiatan?',
+        text: 'Data kegiatan ini akan dihapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          AppState.kegiatanList = AppState.kegiatanList.filter(x => x.id !== id);
+          Toast.fire({ icon: 'success', title: 'Data berhasil dihapus' });
+          renderTableKegiatan();
+        }
+      });
+    }
+
+    function handleLogout() {
+      sessionStorage.clear();
+      location.reload();
+    }
+  </script>
+</body>
+</html>
